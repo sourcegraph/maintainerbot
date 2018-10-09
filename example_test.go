@@ -19,6 +19,8 @@ func Example() {
 	spreadsheetURL := "https://docs.google.com/spreadsheets/d/<key>/export?format=csv&sheet=0"
 	cla := tasks.NewCLAChecker(ghc, "http://example.com/sign-cla", tasks.NewSpreadsheetFetcher(spreadsheetURL))
 	cla.StartFetch(ctx)
+	congrats := tasks.NewCongratulator(ghc, "Congrats, @{{ .Username }}!")
 	bot.RegisterTask(cla)
+	bot.RegisterTask(congrats)
 	bot.Run(ctx)
 }
