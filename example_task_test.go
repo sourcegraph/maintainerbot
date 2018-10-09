@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	maintainerbot "github.com/sourcegraph/maintainerbot"
-	"github.com/sourcegraph/maintainerbot/tasks"
 	"golang.org/x/build/maintner"
 )
 
@@ -29,13 +28,5 @@ func ExampleTask() {
 	d := &docTask{}
 	bot := maintainerbot.New("rails", "rails", os.Getenv("GITHUB_TOKEN"))
 	bot.RegisterTask(d)
-	bot.Run(context.TODO())
-}
-
-func ExampleCongratulator() {
-	ghc := maintainerbot.NewGitHubClient(os.Getenv("GITHUB_TOKEN"), 0)
-	bot := maintainerbot.New("rails", "rails", os.Getenv("GITHUB_TOKEN"))
-	task := tasks.NewCongratulator(ghc, "Congrats on your first PR, @{{ .Username }}!")
-	bot.RegisterTask(task)
 	bot.Run(context.TODO())
 }
