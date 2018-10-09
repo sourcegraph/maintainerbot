@@ -21,7 +21,6 @@ func (d *docTask) Do(ctx context.Context, repo *maintner.GitHubRepo) error {
 		// Issue needs a "documentation" label, add it here.
 		return nil
 	})
-
 }
 
 func ExampleTask() {

@@ -1,4 +1,18 @@
 // Package tasks contains a list of tasks that can be run with the bot.
+//
+// All tasks in this package should satisfy the maintainerbot.Task interface.
+//
+//     // Do labels each GitHub issue containing the word "doc" in the title with the
+//     // "Documentation" label.
+//     func (d *docTask) Do(ctx context.Context, repo *maintner.GitHubRepo) error {
+//         return repo.ForeachIssue(func(gi *maintner.GitHubIssue) error {
+//             if gi.Closed || gi.PullRequest || !strings.Contains(gi.Title, "doc") || gi.HasLabel("Documentation") {
+//                 return nil
+//             }
+//             // Issue needs a "documentation" label, add it here.
+//             return nil
+//         })
+//     }
 package tasks
 
 import (
@@ -120,6 +134,10 @@ func (c *Congratulator) Do(ctx context.Context, repo *maintner.GitHubRepo) error
 // CLAChecker can fetch and validate that pull request authors have signed
 // a CLA.
 type CLAChecker struct {
+	// Return true from CanSkipCLA to post a "CLA not necessary" success message
+	// on matching PR's. If nil, all PR's are assumed to need a CLA.
+	CanSkipCLA func(*github.PullRequest, []*github.CommitFile) bool
+
 	signedCLAPRs       map[int32]bool
 	ghc                *github.Client
 	claURL             string
@@ -129,12 +147,12 @@ type CLAChecker struct {
 
 	contributors  map[string]bool
 	contributorMu sync.Mutex
-
-	CanSkipCLA func(*github.PullRequest, []*github.CommitFile) bool
 }
 
 // ContributorFetcher is any struct that can fetch and return a list of
-// contributors that have signed the CLA
+// contributors that have signed the CLA. You can provide a custom
+// implementation in CLAChecker, or use the provided SpreadsheetFetcher to fetch
+// from a Google Sheet.
 type ContributorFetcher interface {
 	LoadContributors(ctx context.Context) ([]string, error)
 }
@@ -391,6 +409,11 @@ func getUsernames(file []byte, columnName string) ([]string, error) {
 	return emails, nil
 }
 
+// LoadContributors satisfies the ContributorFetcher interface. In
+// particular, it fetches the provided sheetURL in NewSpreadsheetFetcher,
+// then searches for the first column with a first row that contains
+// SpreadsheetFetcher.ColumnName. All subsequent rows in that column are
+// returned.
 func (s *SpreadsheetFetcher) LoadContributors(ctx context.Context) ([]string, error) {
 	body, err := downloadCSV(ctx, s.sheetURL)
 	if err != nil {
