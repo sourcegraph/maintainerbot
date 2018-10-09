@@ -76,7 +76,7 @@ func (c *Congratulator) Do(ctx context.Context, repo *maintner.GitHubRepo) error
 		if c.knownContributors == nil {
 			c.knownContributors = make(map[string]bool)
 		}
-		if gh.NotExist {
+		if gh.NotExist || !gh.PullRequest {
 			return nil
 		}
 		username := gh.User.Login
