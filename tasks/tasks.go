@@ -98,11 +98,16 @@ func (c *Congratulator) Do(ctx context.Context, repo *maintner.GitHubRepo) error
 			c.knownContributors[username] = true
 			continue
 		}
+		hasNewContributorLabel := false
 		for _, label := range ghIssue.Labels {
 			if label.Name == "new-contributor" {
-				c.knownContributors[username] = true
-				continue
+				hasNewContributorLabel = true
+				break
 			}
+		}
+		if hasNewContributorLabel {
+			c.knownContributors[username] = true
+			continue
 		}
 		cdata := &CongratsData{
 			Username: ghIssue.User.Login,
