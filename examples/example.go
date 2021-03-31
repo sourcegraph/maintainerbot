@@ -12,7 +12,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -28,7 +27,7 @@ func getGithubToken() (string, error) {
 	if token, ok := os.LookupEnv("GITHUB_TOKEN"); ok {
 		return token, nil
 	}
-	slurp, err := ioutil.ReadFile(*githubTokenFile)
+	slurp, err := os.ReadFile(*githubTokenFile)
 	if err != nil {
 		return "", err
 	}
