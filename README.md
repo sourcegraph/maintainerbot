@@ -1,9 +1,9 @@
 # maintainerbot
 
 Maintainerbot is designed to make it easy to create custom bots for interacting
-with Github repositories. The core of Maintainerbot is `maintner`, a Go program
-that creates an in-memory representation of your Github repository. Removing the
-Github API (and the need to handle rate limits, and paging) is a great way to
+with GitHub repositories. The core of Maintainerbot is `maintner`, a Go program
+that creates an in-memory representation of your GitHub repository. Removing the
+GitHub API (and the need to handle rate limits, and paging) is a great way to
 make creating bots easy.
 
 (`maintner` and `gopherbot` are written by the Go Authors, and available from
